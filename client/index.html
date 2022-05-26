@@ -26,7 +26,64 @@
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+        const namesList = document.querySelector(".name-list")
+        const clearNames = () => {
+            namesList.innerHTML = ''
+        }
+    </script>
+    <script>
+        const addNameForm = document.querySelector(".name-collector")
+        const nameFromForm = document.querySelector(".name-input")
         
+        const addNameToPage = evt => {
+            evt.preventDefault()
+            clearNames()
+            let addedName = {
+                name: nameFromForm.value
+            }
+            axios
+                .post("http://localhost:4000/names", addedName)
+                .then(response => {
+                    console.log(response.data)
+                    let namesArr = response.data
+                    namesArr.forEach(el => {
+                        let listItem = document.createElement("li")
+                        listItem.textContent = el
+                        namesList.appendChild(listItem)
+                    })
+                })
+                .catch(err => console.log(err))
+        }
+
+        addNameForm.addEventListener("submit", addNameToPage)
+    </script>
+    <script>
+        const changeNameForm = document.querySelector(".name-changer")
+        
+        const changeNameOnPage = evt => {
+            evt.preventDefault()
+            clearNames()
+            let nameToChange = document.querySelector(".original-name")
+            let changedName = document.querySelector(".changed-name")
+            let nameObj = {
+                original: nameToChange.value,
+                changed: changedName.value
+            }
+
+            axios
+                .put("http://localhost:4000/names", nameObj)
+                .then(response => {
+                    let namesArr = response.data
+                    namesArr.forEach(el => {
+                        let listItem = document.createElement("li")
+                        listItem.textContent = el
+                        namesList.appendChild(listItem)
+                    })
+                })
+                .catch(err => console.log(err))
+        }
+
+        changeNameForm.addEventListener("submit", changeNameOnPage)
     </script>
 </body>
 </html>
